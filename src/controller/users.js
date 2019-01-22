@@ -48,11 +48,25 @@ const getUser = ({ id }) =>
           }),
           Users.excludeAttributes
         )
-      : Promise.reject(new Error('UNKOWN OR DELETED USER'))
+      : Promise.reject(new Error('UNKOWN OR DELETED USER (select)'))
   );
+
+
+const updateUser = ({ id, firstName, lastName }) =>
+  Users.update(
+    { firstName: firstName || '', lastName: lastName || ''},
+    { where: { id }}
+  ).then(value => value > 0 ? Promise.resolve() : Promise.reject(new Error('UNKNOWN OR DELETED USER (update)')));
+
+const deleteUser = ({ id }) =>
+  Users.destroy(
+    { where: { id }}
+  ).then(value => value > 0 ? Promise.resolve() : Promise.reject(new Error('UNKNOWN OR DELETED USER (delete)')));
 
 module.exports = {
   createUser,
   getUser,
-  loginUser
+  loginUser,
+  updateUser,
+  deleteUser
 };
