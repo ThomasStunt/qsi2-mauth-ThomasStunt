@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt'); // https://github.com/kelektiv/node.bcrypt.js
+const Groups = require('./group');
 
 module.exports = (sequelize, DataTypes) => {
   const Users = sequelize.define(
@@ -9,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
         comment: 'User ID',
-        primaryKey: true
+        primaryKey: true,
       },
       firstName: {
         type: DataTypes.STRING,
@@ -20,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
             'firstName',
             val.charAt(0).toUpperCase() + val.substring(1).toLowerCase()
           );
-        }
+        },
       },
       lastName: {
         type: DataTypes.STRING,
@@ -31,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
             'lastName',
             val.charAt(0).toUpperCase() + val.substring(1).toLowerCase()
           );
-        }
+        },
       },
       email: {
         type: DataTypes.STRING,
@@ -40,8 +41,8 @@ module.exports = (sequelize, DataTypes) => {
         comment: 'User email',
         // Field validation
         validate: {
-          isEmail: true
-        }
+          isEmail: true,
+        },
       },
       hash: {
         type: DataTypes.STRING,
@@ -51,8 +52,8 @@ module.exports = (sequelize, DataTypes) => {
         set(val) {
           const hash = bcrypt.hashSync(val, 12);
           this.setDataValue('hash', hash);
-        }
-      }
+        },
+      },
     },
     {
       // logical delete over physical delete
@@ -60,18 +61,11 @@ module.exports = (sequelize, DataTypes) => {
       indexes: [
         {
           unique: true,
-          fields: ['email']
-        }
-      ]
-    },
-    {
-      classMethods: {
-        associate: models => {
-          Users.belongsToMany(models.Groups, {through: 'Membership'});
-        }
-      },
-      tableName: 'Users'
-    });
+          fields: ['email'],
+        },
+      ],
+    }
+  );
 
   // we don't want to send password even if crypted
   Users.excludeAttributes = ['hash'];
@@ -87,6 +81,10 @@ module.exports = (sequelize, DataTypes) => {
         return resolve();
       });
     });
+  };
+
+  Users.associate = models => {
+    Users.belongsToMany(models.Groups, { through: 'UserGroups' });
   };
 
   return Users;

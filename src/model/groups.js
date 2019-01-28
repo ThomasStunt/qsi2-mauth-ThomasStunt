@@ -29,30 +29,17 @@ module.exports = (sequelize, DataTypes) => {
         }
       },
       metadata: {
+        //Metadatas for group
         type: DataTypes.JSON,
         comment: 'Group metadata',
         allowNull: true
       }
-    },
-    {
-      // logical delete over physical delete
-      paranoid: true,
-      indexes: [
-        {
-          unique: true,
-          fields: ['title']
-        }
-      ]
-    },
-    {
-      classMethods: {
-        associate: models => {
-          Groups.belongsTo(models.Users, {as:'Owner'});
-          Groups.belongsToMany(models.Users, {through: 'Membership'});
-        },
-      },
-      tableName: 'Groups'
     });
+
+    Groups.associate = models => {
+      Groups.belongsTo(models.Users, {as:'Owner', foreignKey:'ownerId'});
+      Groups.belongsToMany(models.Users, {through: 'Membership'});
+    };
 
   return Groups;
 };
