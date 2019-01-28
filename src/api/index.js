@@ -19,6 +19,7 @@ apiRoutes
   // api bellow this middelware require Authorization
   .use(isAuthenticated)
   .use('/users', apiUsersProtected)
+  .use('/groups', apiUsersProtected)
   .use((err, req, res, next) => {
     res.status(403).send({
       success: false,
