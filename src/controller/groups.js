@@ -10,4 +10,18 @@ const createGroup = ({ title, description, metaData, Owner }) =>
 
 const getAllGroups = () => Groups.findAll();
 
-module.exports = { createGroup, getAllGroups }
+const addMember = ({ groupId, userId }) =>
+  Groups.findOne({
+    where: { id: groupId }
+  }).then(g =>
+    g.id ? g.addUser(userId) : Promise.reject('UNKNOWN OR DELETED GROUP')
+  );
+
+const removeMember = ({ groupId, userId }) =>
+  Groups.findOne({
+    where: { id: groupId }
+  }).then(g =>
+    g.id ? g.removeUser(userId) : Promise.reject('UNKNOWN OR DELETED GROUP')
+  );
+
+module.exports = { createGroup, getAllGroups, addMember, removeMember }
