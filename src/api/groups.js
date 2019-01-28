@@ -1,9 +1,9 @@
 const express = require('express');
 
 const logger = require('../logger.js');
-const { createGroup } = require('../controller/groups');
+const { createGroup, getAllGroups } = require('../controller/groups');
 
-const apiUsersProtected = express.Router();
+const apiGroupsProtected = express.Router();
 
 apiGroupsProtected.post('/', (req, res) =>
   !req.body.title || !req.body.Owner
@@ -24,6 +24,25 @@ apiGroupsProtected.post('/', (req, res) =>
           return res.status(500).send({
             success: false,
             message: `${err.name} : ${err.message}`,
-          });
-        })
-);
+        });
+      })
+    );
+
+apiGroupsProtected.get('/', (req, res) =>
+  getAllGroups()
+    .then(list =>
+      res.status(200).send({
+        success: true,
+        profile: list,
+        message: 'groups available'
+      })
+    ).catch(err => {
+      logger.error(`💥 Failed to get list of groups : ${err.stack}`);
+      return res.status(500).send({
+        success: false,
+        message: `${err.name} : ${err.message}`,
+      });
+    })
+)
+
+module.exports = { apiGroupsProtected };

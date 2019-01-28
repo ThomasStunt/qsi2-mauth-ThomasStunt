@@ -7,3 +7,7 @@ const createGroup = ({ title, description, metaData, Owner }) =>
     metaData,
     ownerId: Owner
   });
+
+const getAllGroups = () => Groups.findAll();
+
+module.exports = { createGroup, getAllGroups }
