@@ -67,8 +67,8 @@ module.exports = (sequelize, DataTypes) => {
     {
       classMethods: {
         associate: models => {
-          Users.hasMany(models.Groups, {through: 'Ownership'});
-          Users.belongsToMany(models.Groups, {through: 'Membership'});
+          Users.hasMany(models.Groups, {foreignKey: 'ownerId'});
+          Users.hasMany(models.Groups, {foreignKey: 'memberId'});
         }
       },
       tableName: 'Users'

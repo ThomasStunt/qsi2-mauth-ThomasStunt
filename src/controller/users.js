@@ -72,7 +72,7 @@ const createGroup = ({ title, description, metaData }, { id }) =>
     ownerId: id
   })
   .then(group => {
-    console.log(group);
+      console.log(group);
   });
 
 module.exports = {

@@ -53,7 +53,7 @@ module.exports = (sequelize, DataTypes) => {
       classMethods: {
         associate: models => {
           Groups.belongsToOne(models.Users, {foreignKey: 'ownerId'});
-          Groups.hasMany(models.Users, {foreignKey:'memberId'});
+          Groups.hasMany(models.Users, {foreignKey: 'memberId'});
         },
       },
       tableName: 'Groups'
