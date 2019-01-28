@@ -1,6 +1,6 @@
 const express = require('express');
 const jwt = require('jwt-simple');
-const { createUser, loginUser, updateUser, deleteUser } = require('../controller/users');
+const { createUser, loginUser, updateUser, deleteUser, createGroup } = require('../controller/users');
 const logger = require('../logger');
 
 const apiUsers = express.Router();
@@ -130,6 +130,26 @@ apiUsersProtected.delete('/', (req, res) =>
           message: `${err.name} : ${err.message}`
         });
       })
+);
+
+apiUsersProtected.post('/groups', (req, res) =>
+  !req.body.title || !req.body.description || !req.body.metadata
+  ? res.status(400).send({
+    success: false,
+    message: 'Title and description are required'
+  })
+  : createGroup(req.body, req.user)
+    .then(group => res.status(200).send({
+      success: true,
+      message: 'group has been created'
+    }))
+    .catch(err => {
+      logger.error(`💥 Failed to create group : ${err.stack}`);
+      return res.status(500).send({
+        success: false,
+        message: `${err.name} : ${err.message}`
+      });
+    })
 );
 
 module.exports = { apiUsers, apiUsersProtected };

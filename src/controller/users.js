@@ -1,5 +1,5 @@
 const omit = require('lodash.omit');
-const { Users } = require('../model');
+const { Users, Groups } = require('../model');
 
 const createUser = ({ firstName, lastName, email, password }) =>
   Users.create({
@@ -63,10 +63,23 @@ const deleteUser = ({ id }) =>
     { where: { id }}
   ).then(value => value > 0 ? Promise.resolve() : Promise.reject(new Error('UNKNOWN OR DELETED USER (delete)')));
 
+
+const createGroup = ({ title, description, metaData }, { id }) =>
+  Groups.create({
+    title,
+    description,
+    metaData,
+    ownerId: id
+  })
+  .then(group => {
+    console.log(group);
+  });
+
 module.exports = {
   createUser,
   getUser,
   loginUser,
   updateUser,
-  deleteUser
+  deleteUser,
+  createGroup
 };

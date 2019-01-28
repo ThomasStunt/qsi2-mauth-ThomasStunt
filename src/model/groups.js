@@ -1,4 +1,5 @@
-const bcrypt = require('bcrypt'); // https://github.com/kelektiv/node.bcrypt.js
+const path = require('path');
+const { Users } = require('./');
 
 module.exports = (sequelize, DataTypes) => {
   const Groups = sequelize.define(
@@ -16,10 +17,7 @@ module.exports = (sequelize, DataTypes) => {
         comment: 'Group title',
         // setter to standardize
         set(val) {
-          this.setDataValue(
-            'title',
-            val.charAt(0).toUpperCase() + val.substring(1).toLowerCase()
-          );
+          this.setDataValue('title', val.charAt(0).toUpperCase() + val.substring(1).toLowerCase());
         }
       },
       description: {
@@ -27,18 +25,19 @@ module.exports = (sequelize, DataTypes) => {
         comment: 'Group description',
         // setter to standardize
         set(val) {
-          this.setDataValue(
-            'title',
-            val.charAt(0).toUpperCase() + val.substring(1).toLowerCase()
-          );
+          this.setDataValue('description', val.charAt(0).toUpperCase() + val.substring(1).toLowerCase());
         }
       },
       metadata: {
         type: DataTypes.JSON,
-        // Not null management
-        allowNull: false,
         comment: 'Group metadata',
+        allowNull: true
       },
+      ownerId: {
+        type: DataTypes.UUID,
+        comment: 'Owner id',
+        allowNull: false
+      }
     },
     {
       // logical delete over physical delete
@@ -49,7 +48,16 @@ module.exports = (sequelize, DataTypes) => {
           fields: ['title']
         }
       ]
-    }
-  );
+    },
+    {
+      classMethods: {
+        associate: models => {
+          Groups.belongsToOne(models.Users, {foreignKey: 'ownerId'});
+          Groups.hasMany(models.Users, {foreignKey:'memberId'});
+        },
+      },
+      tableName: 'Groups'
+    });
+
   return Groups;
 };

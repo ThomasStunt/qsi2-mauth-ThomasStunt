@@ -63,8 +63,16 @@ module.exports = (sequelize, DataTypes) => {
           fields: ['email']
         }
       ]
-    }
-  );
+    },
+    {
+      classMethods: {
+        associate: models => {
+          Users.hasMany(models.Groups, {through: 'Ownership'});
+          Users.belongsToMany(models.Groups, {through: 'Membership'});
+        }
+      },
+      tableName: 'Users'
+    });
 
   // we don't want to send password even if crypted
   Users.excludeAttributes = ['hash'];
