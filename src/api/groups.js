@@ -17,14 +17,14 @@ apiGroupsProtected.post('/', (req, res) =>
         success: true,
         profile: group,
         message: 'group created',
-      });
+      })
     })
     .catch(err => {
       logger.error(`💥 Failed to create group : ${err.stack}`);
       return res.status(500).send({
         success: false,
         message: `${err.name} : ${err.message}`
-    });
+    })
   })
 );
 
@@ -41,7 +41,7 @@ apiGroupsProtected.get('/', (req, res) =>
       return res.status(500).send({
         success: false,
         message: `${err.name} : ${err.message}`,
-      });
+      })
     })
 );
 
@@ -52,18 +52,40 @@ apiGroupsProtected.post('/member', (req, res) =>
       message: 'Group Id and User Id required'
     })
   : addMember(req.body)
-    .then(group => {
+    .then(() => {
       res.status(200).send({
         success: true,
-        profile: group,
-        message: 'member successfully added to group'
+        message: 'user was added to the group',
+      })
     })
     .catch(err => {
       logger.error(`💥 Failed to add member to group : ${err.stack}`);
       return res.status(500).send({
         success: false,
         message: `${err.name} : ${err.message}`,
-      });
+      })
+    })
+);
+
+apiGroupsProtected.delete('/member', (req, res) =>
+  !req.body.groupId || !req.body.userId
+  ? res.status(400).send({
+      success: false,
+      message: 'Group Id and User Id required'
+    })
+  : removeMember(req.body)
+    .then(() => {
+      res.status(200).send({
+        success: true,
+        message: 'user was removed from the group'
+      })
+    })
+    .catch(err => {
+      logger.error(`💥 Failed to remove member from group : ${err.stack}`);
+      return res.status(500).send({
+        success: false,
+        message: `${err.name} : ${err.message}`,
+      })
     })
 );
 
