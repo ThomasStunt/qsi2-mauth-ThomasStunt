@@ -1,7 +1,7 @@
 const express = require('express');
 
 const logger = require('../logger.js');
-const { createGroup, getAllGroups, addMember, removeMember, getPosts } = require('../controller/groups');
+const { createGroup, getAllGroups, addMember, removeMember } = require('../controller/groups');
 
 const apiGroupsProtected = express.Router();
 
@@ -88,28 +88,5 @@ apiGroupsProtected.delete('/member', (req, res) =>
       })
     })
 );
-
-apiGroupsProtected.get('/posts', (req, res) =>
-  !req.body.groupId || !req.body.userId
-  ? res.status(400).send({
-    success: false,
-    message: 'Group Id and User Id required'
-  })
-  : getPosts(req.body)
-    .then(posts => {
-      res.status(200).send({
-        success: true,
-        profile: posts,
-        message: 'posts found'
-      })
-      .catch(err => {
-        logger.error(`💥 Failed to gather posts from group : ${err.stack}`);
-        return res.status(500).send({
-          success: false,
-          message: `${err.name} : ${err.message}`,
-        })
-      })
-    })
-)
 
 module.exports = { apiGroupsProtected };

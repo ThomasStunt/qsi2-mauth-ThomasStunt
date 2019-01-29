@@ -24,10 +24,4 @@ const removeMember = ({ groupId, userId }) =>
     g.id ? g.removeUser(userId) : Promise.reject('UNKNOWN OR DELETED GROUP')
   );
 
-const getPosts = ({ groupId, userId }) =>
-  Groups.findOne(
-    { where: { id: groupId }},
-    { attributes: 'metadata'}
-  )
-
-module.exports = { createGroup, getAllGroups, addMember, removeMember, getPosts }
+module.exports = { createGroup, getAllGroups, addMember, removeMember }
