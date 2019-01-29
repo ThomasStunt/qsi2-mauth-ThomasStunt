@@ -32,6 +32,7 @@
   "dependencies": {
     "bcrypt": "^3.0.3",
     "express": "^4.16.4",
+    "express-sslify": "^1.2.0",
     "helmet": "^3.15.0",
     "hpp": "^0.2.2",
     "jwt-simple": "^0.5.5",
