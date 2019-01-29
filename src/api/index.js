@@ -1,6 +1,7 @@
 const express = require('express');
 const helmet = require('helmet');
 const hpp = require('hpp');
+const enforce = require('express-sslify');
 const { apiUsers, apiUsersProtected } = require('./users');
 const { isAuthenticated, initAuth } = require('../controller/auth');
 const { apiGroupsProtected } = require('./groups');
